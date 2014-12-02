@@ -6,3 +6,12 @@ html {
 body {
   margin: 1em;
 }
+ul.folders ul.folders {
+  display: none;
+}
+ul.folders .expanded > ul.folders {
+  display: block;
+}
+ul.folders .selected > a {
+  color: red;
+}

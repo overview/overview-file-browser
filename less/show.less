@@ -1,3 +1,4 @@
+
 html {
   margin: 0;
   border: 1px solid #eee;
@@ -6,4 +7,20 @@ html {
 
 body {
   margin: 1em;
+}
+
+ul.folders {
+
+  ul.folders {
+    display: none;
+  }
+
+  .expanded > ul.folders {
+    display: block;
+  }
+
+  .selected > a {
+    color: red;
+  }
+
 }
