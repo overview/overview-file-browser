@@ -44,7 +44,7 @@ module.exports = class App
             parent = parent[folder]
 
         folderList = _.template('''
-          <div>
+          <div class="<%- Object.keys(subfolders).length ? '' : 'leaf' %>">
             <% if (folderName) { %>
               <a href="#<%- fullPath %>" class="folder"><%- folderName %></a>
             <% } %>

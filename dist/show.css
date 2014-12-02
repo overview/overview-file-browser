@@ -5,6 +5,12 @@ html {
 }
 body {
   margin: 1em;
+  font-family: Helvetica, Arial, sans-serif;
+}
+a {
+  display: block;
+  padding: 3px 8px;
+  color: #50ade5;
 }
 ul.folders ul.folders {
   display: none;
@@ -13,5 +19,12 @@ ul.folders .expanded > ul.folders {
   display: block;
 }
 ul.folders .selected > a {
-  color: red;
+  background: #50ade5;
+  color: whitesmoke;
+}
+ul.folders :not(.leaf) > a::before {
+  content: '\25b8';
+}
+ul.folders .expanded:not(.leaf) > a::before {
+  content: '\25be';
 }

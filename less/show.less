@@ -1,4 +1,6 @@
 
+@color-primary: #50ade5;
+
 html {
   margin: 0;
   border: 1px solid #eee;
@@ -7,6 +9,15 @@ html {
 
 body {
   margin: 1em;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+a {
+
+  display: block;
+  padding: 3px 8px;
+  color: @color-primary;
+
 }
 
 ul.folders {
@@ -20,7 +31,16 @@ ul.folders {
   }
 
   .selected > a {
-    color: red;
+    background: @color-primary;
+    color: whitesmoke;
+  }
+
+  :not(.leaf) > a::before {
+    content: '\25b8';
+  }
+
+  .expanded:not(.leaf) > a::before {
+    content: '\25be';
   }
 
 }
