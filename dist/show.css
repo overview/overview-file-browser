@@ -12,8 +12,14 @@ a {
   padding: 3px 8px;
   color: #50ade5;
 }
+ul.folders {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 ul.folders ul.folders {
   display: none;
+  margin-left: 1em;
 }
 ul.folders .expanded > ul.folders {
   display: block;
@@ -21,6 +27,11 @@ ul.folders .expanded > ul.folders {
 ul.folders .selected > a {
   background: #50ade5;
   color: whitesmoke;
+}
+ul.folders a::before {
+  display: inline-block;
+  width: 1em;
+  content: ' ';
 }
 ul.folders :not(.leaf) > a::before {
   content: '\25b8';

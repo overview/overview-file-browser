@@ -13,17 +13,20 @@ body {
 }
 
 a {
-
   display: block;
   padding: 3px 8px;
   color: @color-primary;
-
 }
 
 ul.folders {
 
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
   ul.folders {
     display: none;
+    margin-left: 1em;
   }
 
   .expanded > ul.folders {
@@ -33,6 +36,12 @@ ul.folders {
   .selected > a {
     background: @color-primary;
     color: whitesmoke;
+  }
+
+  a::before {
+    display: inline-block;
+    width: 1em;
+    content: ' ';
   }
 
   :not(.leaf) > a::before {
