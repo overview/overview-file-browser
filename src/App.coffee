@@ -19,11 +19,19 @@ module.exports = class App
     @$el = $(el)
     @$el.text('Loading…')
 
-    Promise.resolve($.ajax('/folders'+window.location.search))
-      .then (folders) =>
+    Promise.all([
+      Promise.resolve($.ajax('/folders'+window.location.search))
+      Promise.resolve($.ajax(
+        url: "#{@server}/api/v1/store/state"
+        dataType: 'json'
+        headers:
+          Authorization: 'Basic '+new Buffer(@apiToken+':x-auth-token').toString('base64')
+      ))
+    ])
+      .spread (folders, state) =>
 
         folderList = _.template('''
-          <div class="<%- Object.keys(subfolders).length ? '' : 'leaf' %>">
+          <div data-fullpath="<%- fullPath %>" class="<%- Object.keys(subfolders).length ? '' : 'leaf' %> <%- state.selected == fullPath ? 'selected' : '' %> <%- state.expanded.indexOf(fullPath) > -1 ? 'expanded' : '' %>">
             <% if (folderName) { %>
               <a href="#<%- fullPath %>" class="folder"><%- folderName %></a>
             <% } %>
@@ -42,7 +50,8 @@ module.exports = class App
                         folderList: folderList,
                         subfolders: subfolders[key],
                         folderName: key,
-                        fullPath: fullPath+'/'+key
+                        fullPath: fullPath+'/'+key,
+                        state: state
                       })
                     %>
                   </li>
@@ -56,7 +65,8 @@ module.exports = class App
           folderList: folderList,
           subfolders: folders,
           folderName: '',
-          fullPath: ''
+          fullPath: '',
+          state: state
         ))
 
       .catch (e) =>
@@ -81,4 +91,23 @@ module.exports = class App
         @$el.find('.selected').removeClass('selected')
         $container.addClass('selected expanded')
 
+      @saveState()
+
     undefined
+
+  saveState: ->
+
+    selected = $('div.selected').attr('data-fullpath')
+    expanded = $('div.expanded').get().map (el) ->
+      el.getAttribute('data-fullpath')
+
+    $.ajax
+      url: "#{@server}/api/v1/store/state"
+      type: 'put'
+      contentType: 'application/json'
+      headers:
+        Authorization: 'Basic '+new Buffer(@apiToken+':x-auth-token').toString('base64')
+      data: JSON.stringify(
+        selected: selected
+        expanded: expanded
+      )

@@ -4,7 +4,6 @@ gulp = require('gulp')
 jade = require('gulp-jade')
 morgan = require('morgan')
 less = require('gulp-less')
-serveStatic = require('serve-static')
 source = require('vinyl-source-stream')
 watchify = require('watchify')
 
@@ -58,13 +57,4 @@ gulp.task 'dev', [ 'browserify-dev', 'jade', 'less' ], ->
 
 gulp.task 'dist', [ 'browserify', 'jade', 'less' ]
 
-gulp.task 'default', [ 'dev' ], ->
-  # Start a web server
-  app = express()
-  app.use(morgan('dev'))
-  app.use(serveStatic('dist', {
-    extensions: [ 'html' ]
-    setHeaders: (res) -> res.setHeader('Access-Control-Allow-Origin', '*')
-  }))
-  app.listen(8000)
-  console.log('Serving at http://localhost:8000')
+gulp.task 'default', [ 'dev' ]
