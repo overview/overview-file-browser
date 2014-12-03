@@ -57,5 +57,10 @@
     "sinon-chai": "^2.5.0",
     "vinyl-source-stream": "^1.0.0",
     "watchify": "^1.0.2"
+  },
+  "dependencies": {
+    "express": "^4.10.4",
+    "morgan": "^1.5.0",
+    "oboe": "^2.0.2"
   }
 }

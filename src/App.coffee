@@ -13,35 +13,14 @@ module.exports = class App
       throw "Must pass options.#{k}, a #{v}" if !@options[k]
       @[k] = @options[k]
 
-    @_ajax = (options) =>
-      auth = new Buffer(@apiToken + ':x-auth-token').toString('base64')
-
-      options = _.extend({
-        dataType: 'json'
-        headers:
-          Authorization: "Basic #{auth}"
-      }, options)
-      Promise.resolve($.ajax(options))
-
   $: (args...) -> @$el.find(args...)
-
-  getDocuments: ->
-    @_ajax(url: "#{@server}/api/v1/document-sets/#{@documentSetId}/documents?stream=true&fields=title")
 
   attach: (el) ->
     @$el = $(el)
     @$el.text('Loading…')
 
-    @getDocuments()
-      .then (result) =>
-
-        folders = {}
-
-        for document in result.items
-          parent = folders
-          for folder in document.title.split('/').slice(0, -1)
-            parent[folder] ?= {}
-            parent = parent[folder]
+    Promise.resolve($.ajax('/folders'+window.location.search))
+      .then (folders) =>
 
         folderList = _.template('''
           <div class="<%- Object.keys(subfolders).length ? '' : 'leaf' %>">
