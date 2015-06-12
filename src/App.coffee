@@ -89,7 +89,7 @@ module.exports = class App
 
       $folder = $(ev.currentTarget)
       $container = $folder.parent()
-      path = $folder.attr('href').substring(2)
+      path = $folder.attr('href').substring(1)
 
       @runSearch(path)
 
