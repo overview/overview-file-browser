@@ -79,10 +79,7 @@ module.exports = class App
       $container = $folder.parent()
       path = $folder.attr('href').substring(2)
 
-      window.parent.postMessage({
-        call: 'setDocumentListParams',
-        args: [{q: "title:\"#{path}\"", name: "in #{path}"}]
-      }, @options.server)
+      @runSearch(path)
 
       if $container.hasClass('selected')
         $container.toggleClass('expanded')
@@ -94,6 +91,12 @@ module.exports = class App
       @saveState()
 
     undefined
+
+  runSearch: (path) ->
+    window.parent.postMessage({
+      call: 'setDocumentListParams',
+      args: [{q: "title:\"#{path}\"", name: "in #{path}"}]
+    }, @options.server)
 
   saveState: ->
 
