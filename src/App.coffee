@@ -28,7 +28,16 @@ module.exports = class App
           Authorization: 'Basic '+new Buffer(@apiToken+':x-auth-token').toString('base64')
       ))
     ])
-      .spread (folders, state) =>
+      .spread (folderData, state) =>
+        if folderData.errors and folderData.errors[0]
+          err = new Error(folderData.errors[0].title)
+          err.isOverviewError = true
+          throw err
+        else
+          folders = folderData.data
+
+        if state.selected
+          @runSearch(state.selected)
 
         folderList = _.template('''
           <div data-fullpath="<%- fullPath %>" class="<%- Object.keys(subfolders).length ? '' : 'leaf' %> <%- state.selected == fullPath ? 'selected' : '' %> <%- (state.expanded || []).indexOf(fullPath) > -1 ? 'expanded' : '' %>">
@@ -71,7 +80,7 @@ module.exports = class App
 
       .catch (e) =>
         console.log e
-        @$el.text('Error')
+        @$el.text(if e.isOverviewError == true then e.message else 'Error.')
 
     @$el.on 'click', 'a.folder', (ev) =>
 

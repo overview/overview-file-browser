@@ -8,22 +8,35 @@ app.use(morgan('dev'));
 
 app.get('/folders', function(req, res) {
   var folders = {};
+  var foundADoc = false;
+  var foundAFolder = false;
   var client = new API(req.query.server, req.query.apiToken, oboe);
 
   client.docSet(req.query.documentSetId).getDocuments(["title"])
     .on('node', '!items[*]', function(document) {
       var parent = folders;
 
+      foundADoc = true;
       document.title.split('/').slice(0, -1).forEach(function(folder) {
         parent[folder] = parent[folder] || {};
         parent = parent[folder];
+        foundAFolder = true;
       });
 
       return oboe.drop;
     })
 
     .on('done', function() {
-      res.json(folders);
+      if(foundADoc && !foundAFolder) {
+        var msg = 'Unfortunately, this plugin only works if you imported ' +
+          'your documents using the "Add all files in a folder...", option, ' +
+          'which is only available in Chrome.';
+
+        res.json({"errors": [{"code": "DocsWithoutFolders", "title": msg}]})
+      }
+      else {
+        res.json({"data": folders});
+      }
     });
 });
 
