@@ -31,7 +31,7 @@ module.exports = class App
       .spread (folders, state) =>
 
         folderList = _.template('''
-          <div data-fullpath="<%- fullPath %>" class="<%- Object.keys(subfolders).length ? '' : 'leaf' %> <%- state.selected == fullPath ? 'selected' : '' %> <%- state.expanded.indexOf(fullPath) > -1 ? 'expanded' : '' %>">
+          <div data-fullpath="<%- fullPath %>" class="<%- Object.keys(subfolders).length ? '' : 'leaf' %> <%- state.selected == fullPath ? 'selected' : '' %> <%- (state.expanded || []).indexOf(fullPath) > -1 ? 'expanded' : '' %>">
             <% if (folderName) { %>
               <a href="#<%- fullPath %>" class="folder"><%- folderName %></a>
             <% } %>
