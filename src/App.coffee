@@ -107,7 +107,7 @@ module.exports = class App
   runSearch: (path) ->
     window.parent.postMessage({
       call: 'setDocumentListParams',
-      args: [{q: "title:\"#{path}\"", name: "in #{path}"}]
+      args: [{q: "title: #{path.substr(1)}/*", name: "in #{path}"}]
     }, @options.server)
 
   saveState: ->
