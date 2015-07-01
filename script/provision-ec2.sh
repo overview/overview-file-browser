@@ -25,6 +25,7 @@ sudo useradd -d /opt/pm2 -s /bin/bash -mrU pm2
 sudo mkdir -p /opt/pm2/.ssh
 sudo cp ~/.ssh/authorized_keys /opt/pm2/.ssh/
 sudo chown pm2:pm2 /opt/pm2 -R
+sudo npm install pm2
 
 cat <<EOT | sudo tee /etc/haproxy/haproxy.cfg
 global
