@@ -111,7 +111,6 @@ module.exports = class App
     }, @options.server)
 
   saveState: ->
-
     selected = $('div.selected').attr('data-fullpath')
     expanded = $('div.expanded').get().map (el) ->
       el.getAttribute('data-fullpath')
