@@ -1,14 +1,14 @@
 {
-  "name": "overview-app-gulp-jade-less-coffee-browserify",
-  "version": "0.0.1",
-  "description": "Example Overview App using flat files",
+  "name": "overview-file-browser",
+  "version": "1.0.0",
+  "description": "Overview File Browser",
   "scripts": {
     "test": "node_modules/karma/bin/karma start --single-run",
     "test-forever": "node_modules/karma/bin/karma start"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/overview/overview-apps.git"
+    "url": "https://github.com/overview/overview-file-browser.git"
   },
   "keywords": [
     "overview",
@@ -26,9 +26,9 @@
   "author": "Adam Hooper <adam@adamhooper.com>",
   "license": "AGPL-3",
   "bugs": {
-    "url": "https://github.com/overview/overview-apps/issues"
+    "url": "https://github.com/overview/overview-file-browser/issues"
   },
-  "homepage": "https://github.com/overview/overview-apps",
+  "homepage": "https://github.com/overview/overview-file-browser",
   "devDependencies": {
     "bluebird": "^2.3.2",
     "browserify": "^5.11.2",
@@ -54,7 +54,8 @@
     "sinon": "^1.10.3",
     "sinon-chai": "^2.5.0",
     "vinyl-source-stream": "^1.0.0",
-    "watchify": "^1.0.2"
+    "watchify": "^1.0.2",
+    "pm2": "^0.12.5"
   },
   "dependencies": {
     "express": "^4.10.4",
