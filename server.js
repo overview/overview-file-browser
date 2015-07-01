@@ -45,5 +45,5 @@ app.use(express.static('dist', {
   setHeaders: function(res) { res.setHeader('Access-Control-Allow-Origin', '*'); }
 }))
 
-app.listen(8000)
-console.log('Serving at http://localhost:8000')
+app.listen(process.env.PORT || 8000)
+console.log('Serving at http://localhost:' + (process.env.PORT || 8000))
