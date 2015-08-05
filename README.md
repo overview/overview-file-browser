@@ -1,51 +1,32 @@
-Example App
-===========
+File Browser
+============
 
-This app showcases a few tools that make it easy to build a flat-file website.
-You can use it for websites large and small.
+Shows a hierarchy of documents, based on the slashes in their filenames.
 
-Structure
----------
+This is a plugin for Overview. You can see it live on
+https://www.overviewdocs.com.
 
-* `src` contains your code (in JavaScript and
-   [CoffeeScript](http://coffeescript.org/), piped through
-   [Browserify](http://browserify.org/))
-* `jade` contains HTML files (in [Jade](http://jade-lang.com/))
-* `less` contains CSS files (in [Less](http://lesscss.org/))
-* `test` contains unit tests (using Mocha/Sinon/Chai)
+To run with your local Overview install:
 
-Testing
--------
+    git clone https://github.com/overview/overview-file-browser.git
+    cd overview-file-browser
+    npm install --production
+    npm start
+  
+You can then create a word cloud using the "Custom..." option in Overview's
+New View menu. Enter ``http://localhost:3000`` as the URL.
 
-Run `npm test` to test once and `npm run-script test-forever` to watch your
-files and test as they change.
+Development
+-----------
 
-Testing is orchestrated by [Karma](http://karma-runner.github.io/).
-[Mocha](http://visionmedia.github.io/mocha/) is the runner;
-[Chai](http://chaijs.com/) handles assertions and
-[Sinon](http://sinonjs.org/) provides spies and mocks.
-
-Developing
-----------
-
-Run `gulp dev` to recompile files on change and start a simple web server on
-port 8000. Browse to [http://localhost:8000/show](http://localhost:8000/show)
-to test it out; you'll need to instantiate it within your local Overview
-instance to get a valid query string.
-
-When you're done, run `gulp` to minify the resulting JavaScript, then commit.
-
-Deploying
----------
-
-1. Upload the entire `dist` directory to a flat file server.
-2. Make sure the file server adds `.html` to `.../metadata` and `.../show`.
-3. Make sure the file server adds the header `Access-Control-Allow-Origin: *`
-   to `.../metadata`.
-4. Point Overview to the flat file server.
+1. `npm install`
+2. `node-dev ./server.js` to run the server
+3. `gulp dev` to recompile client-side JavaScript on change
+4. `npm test` to run tests (in a PhantomJS browser)
+5. `gulp dist` to write client-side files to `dist/` (which you should commit)
 
 License
 -------
 
-We encourage you to copy this template as a starting point and license your
-resulting code however you wish.
+This project is copyright Overview Services Inc. and released under the
+AGPL-3.0 open source license. See LICENSE for legal prose.
