@@ -1,6 +1,5 @@
 $ = require('jquery')
-_ = require('lodash')
-Promise = require('bluebird')
+_ = { template: require('lodash.template') }
 
 Params =
   server: 'a String'
@@ -28,7 +27,10 @@ module.exports = class App
           Authorization: 'Basic '+new Buffer(@apiToken+':x-auth-token').toString('base64')
       ))
     ])
-      .spread (folderData, state) =>
+      .then (values) =>
+        folderData = values[0]
+        state = values[1]
+
         if folderData.errors and folderData.errors[0]
           err = new Error(folderData.errors[0].title)
           err.isOverviewError = true

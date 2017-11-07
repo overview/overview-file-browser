@@ -1,22 +1,17 @@
-FROM node:0.12.7
-
-MAINTAINER Adam Hooper <adam@adamhooper.com>
-
-RUN groupadd -r app && useradd -r -g app app
+FROM node:9.0.0-alpine
 
 # use changes to package.json to force Docker not to use the cache
 # when we change our application's nodejs dependencies:
-COPY package.json /tmp/package.json
-RUN cd /tmp && npm install --production
-RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
+COPY package.json package-lock.json /opt/app/
+RUN cd /opt/app && npm install --production
+
+ENV PORT 80
+EXPOSE 80
+WORKDIR /opt/app
 
 # From here we load our application's code in, therefore the previous docker
 # "layer" thats been cached will be used if possible
-COPY . /opt/app/
+COPY server.js /opt/app/
+COPY dist /opt/app/dist
 
-USER app
-WORKDIR /opt/app
-
-ENV PORT 3000
-EXPOSE 3000
-CMD [ "node", "server.js" ]
+CMD /usr/local/bin/node /opt/app/server.js

@@ -1,20 +1,23 @@
-var express = require('express');
-var morgan = require('morgan');
-var oboe = require('oboe');
-var API = require('overview-api-node');
+#!/usr/bin/env node
+'use strict'
 
-app = express();
-app.use(morgan('dev'));
+const express = require('express');
+const morgan = require('morgan');
+const oboe = require('oboe');
+const API = require('overview-api-node');
+
+const app = express();
+app.use(morgan('short'));
 
 app.get('/folders', function(req, res) {
-  var folders = {};
-  var foundADoc = false;
-  var foundAFolder = false;
-  var client = new API(req.query.server, req.query.apiToken, oboe);
+  const folders = {};
+  let foundADoc = false;
+  let foundAFolder = false;
+  const client = new API(req.query.server, req.query.apiToken, oboe);
 
   client.docSet(req.query.documentSetId).getDocuments(["title"])
     .on('node', '!items[*]', function(document) {
-      var parent = folders;
+      let parent = folders;
 
       foundADoc = true;
       document.title.split('/').slice(0, -1).forEach(function(folder) {
@@ -28,24 +31,24 @@ app.get('/folders', function(req, res) {
 
     .on('done', function() {
       if(foundADoc && !foundAFolder) {
-        var msg = 'Unfortunately, this plugin only works if you imported ' +
+        const msg = 'Unfortunately, this plugin only works if you imported ' +
           'your documents using the "Add all files in a folder...", option, ' +
           'which is only available in Chrome.';
 
         res.json({"errors": [{"code": "DocsWithoutFolders", "title": msg}]})
-      }
-      else {
+      } else {
         res.json({"data": folders});
       }
     });
 });
 
-app.use(express.static('dist', {
+app.use(express.static(`${__dirname}/dist`, {
   extensions: [ 'html' ],
   setHeaders: function(res) { res.setHeader('Access-Control-Allow-Origin', '*'); }
 }))
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT);
-console.log('Listening on http://localhost:%s', PORT);
+app.listen(PORT, function() {
+  console.log('Listening on http://localhost:%s', PORT);
+});

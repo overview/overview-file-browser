@@ -19,10 +19,7 @@ var buildBrowserify = function() {
 };
 
 gulp.task('browserify', function() {
-  return buildBrowserify().plugin('minifyify', {
-    map: 'main.js',
-    output: './dist/main.js.map'
-  }).bundle()
+  return buildBrowserify().transform('uglifyify').bundle()
     .on('error', console.warn)
     .pipe(source('main.js'))
     .pipe(gulp.dest('./dist/'));

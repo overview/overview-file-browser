@@ -8,10 +8,7 @@ module.exports = (config) ->
       'test/*Test.coffee'
     ]
 
-    preprocessors:
-      'test/*Test.coffee': [ 'browserify' ]
-
     browserify:
-      extensions: [ '.js', '.coffee', '.jade' ]
-      transform: [ 'coffeeify', 'jadeify' ]
       debug: true
+      transform: [ 'coffeeify' ]
+      extensions: [ '.js', '.coffee', '.jade' ]
