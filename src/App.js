@@ -27,7 +27,7 @@ function folderListTemplate(args) {
   var leafClass = keys.length ? '' : 'leaf'
   var selectedClass = args.state.selected === args.fullPath ? 'selected' : ''
   var expandedClass = (args.state.expanded || []).indexOf(args.fullPath) > -1 ? 'expanded' : ''
-  var maybeFolderLink = args.folderName ? ('<a href="' + h(args.fullPath) + '" class="folder">' + h(args.folderName) + '</a>') : ''
+  var maybeFolderLink = args.folderName ? ('<a href="#' + h(args.fullPath) + '" class="folder">' + h(args.folderName) + '</a>') : ''
 
   var maybeUl = keys.length === 0 ? '' : [
     '<ul class="folders">',
@@ -59,7 +59,10 @@ function folderListTemplate(args) {
 
 function App(options) {
   var _this = this
-  [ 'server', 'documentSetId', 'apiToken' ].forEach(function(prop) {
+
+  var neededKeys = [ 'server', 'documentSetId', 'apiToken' ]
+  
+  neededKeys.forEach(function(prop) {
     if (!options[prop]) {
       throw new Error('Must pass options.' + prop + ', a String')
     }
@@ -72,6 +75,7 @@ App.prototype.$ = function() {
 }
 
 App.prototype.attach = function(el) {
+  var _this = this
   this.el = el
   this.el.textContent = 'Loading…'
   this.$el = $(el)
@@ -101,10 +105,10 @@ App.prototype.attach = function(el) {
       }
 
       if (state.selected) {
-        this.runSearch(state.selected)
+        _this.runSearch(state.selected)
       }
 
-      this.el.innerHTML = folderListTemplate({
+      _this.el.innerHTML = folderListTemplate({
         subfolders: folders,
         folderName: '',
         fullPath: '',
@@ -112,8 +116,8 @@ App.prototype.attach = function(el) {
       })
     })
     .catch(function(e) {
-      console.log(e)
-      this.el.textContent = e.isOverviewError ? e.message : 'Error in plugin code'
+      _this.el.textContent = e.isOverviewError ? e.message : 'Error in plugin code'
+      console.log(e, _this.el, _this.el.textContent)
     })
 
   this.$el.on('click', 'a.folder', function(ev) {
@@ -121,17 +125,17 @@ App.prototype.attach = function(el) {
     var container = folder.parentNode
     var path = folder.getAttribute('href').substring(1)
 
-    this.runSearch(path)
+    _this.runSearch(path)
 
     if (container.classList.contains('selected')) {
       container.classList.toggle('expanded')
     } else {
-      this.$el.find('.selected').removeClass('selected')
+      _this.$el.find('.selected').removeClass('selected')
       container.classList.add('selected')
       container.classList.add('expanded')
     }
 
-    this.saveState()
+    _this.saveState()
   })
 }
 

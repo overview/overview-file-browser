@@ -29,8 +29,8 @@ gulp.task('browserify', function() {
     .pipe(source('main.js'))
     .pipe(buffer())
     .pipe(sourcemaps.init({ loadMaps: true }))
-      .pipe(uglify())
-      .on('error', console.warn)
+    .pipe(uglify())
+    .on('error', console.warn)
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('./dist/'))
 })
@@ -40,8 +40,10 @@ gulp.task('browserify-dev', function() {
   bundler = watchify(buildBrowserify(), watchify.args)
   rebundle = function() {
     return bundler.bundle()
-      .on('error', console.warn)
       .pipe(source('main.js'))
+      .pipe(buffer())
+      .pipe(sourcemaps.init({ loadMaps: true }))
+      .on('error', console.warn)
       .pipe(gulp.dest('./dist/'))
   }
   bundler.on('update', rebundle)

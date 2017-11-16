@@ -12,6 +12,6 @@ WORKDIR /opt/app
 # From here we load our application's code in, therefore the previous docker
 # "layer" thats been cached will be used if possible
 COPY server.js /opt/app/
-COPY dist /opt/app/dist
+COPY dist /opt/app/dist/
 
 CMD /usr/local/bin/node /opt/app/server.js
