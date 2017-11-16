@@ -57,7 +57,7 @@ module.exports = class App
             %>
             <% if (keys.length > 0) { %>
               <ul class="folders">
-                <% _.each(keys, function(key) { %>
+                <% keys.forEach(function(key) { %>
                   <li>
                     <%=
                       folderList({
