@@ -8,7 +8,7 @@ const oboe = require('oboe')
 const app = express()
 app.use(morgan('short'))
 
-app.get('/folders', function(req, res) {
+app.get('/folders', (req, res) => {
   const folders = {}
   let foundADoc = false
   let foundAFolder = false
@@ -49,7 +49,7 @@ app.get('/folders', function(req, res) {
 
 app.use(express.static(`${__dirname}/dist`, {
   extensions: [ 'html' ],
-  setHeaders: function(res) { res.setHeader('Access-Control-Allow-Origin', '*'); }
+  setHeaders: (res) => { res.setHeader('Access-Control-Allow-Origin', '*') }
 }))
 
 const PORT = process.env.PORT || 80

@@ -36,10 +36,8 @@ Development Loop
    `./npm run test-forever` to test every time a file changes.)
 1. Write a new test; write accompanying code; make sure tests pass.
 
-**BUG**: right now, when you edit `./server.js`, the web server in `./gulp dev`
-won't reload your new code. Workaround: Ctrl+C and start it again.
-
-**BUG**: `./integration-tests/run` has a bug related to headless Chrome. Use
+**BUG**: `./integration-tests/run` has a bug related to headless Chrome not
+uploading a folder properly. Use
 `./integration-tests/run-browser spec/folders_spec.rb` until we fix it.
 
 Deploying
