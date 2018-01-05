@@ -19,6 +19,7 @@ def chrome_args
   ret = [
     'disable-gpu',
     'no-sandbox',
+    'start-maximized',
     "user-data-dir=/tmp/overview-integration-tester-#{rand(0xffff)}"
   ]
   ret << 'headless' if ENV['HEADLESS'] != 'false'

@@ -42,9 +42,13 @@ describe 'The Folders plugin' do
     page.within_frame('view-app-iframe') do
       page.click_on('folders-spec', wait: WAIT_LOAD)
       page.click_on('dir1', wait: WAIT_FAST)
-      sleep 1 # HACK -- wait for the state to be saved
     end
+    # Wait for the search to happen -- by that time, the save _should_ have happened
+    page.assert_no_selector('h3', text: 'dir3/doc4.pdf', wait: WAIT_LOAD)
+    sleep 1 # ... but let's be safe. This is AJAX.
+
     page.refresh
+
     page.within_frame('view-app-iframe', wait: WAIT_LOAD) do
       # "folders-spec/dir1/dir2" will only be visible if the state loads,
       # opening "folders-spec/dir1/".
