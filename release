@@ -38,7 +38,7 @@ docker build \
   -t overview/overview-file-browser:$PATCH_VERSION \
   -t overview/overview-file-browser:$MINOR_VERSION \
   -t overview/overview-file-browser:$MAJOR_VERSION \
-  "$DIR"/docker
+  "$DIR"
 
 docker push overview/overview-file-browser:$PATCH_VERSION
 docker push overview/overview-file-browser:$MINOR_VERSION
