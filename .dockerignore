@@ -1,1 +1,6 @@
-node_modules
+./integration-test
+./node_modules
+./release
+./gulp
+./in-docker
+./npm
