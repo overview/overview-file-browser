@@ -45,7 +45,7 @@ docker push overview/overview-file-browser:$MINOR_VERSION
 docker push overview/overview-file-browser:$MAJOR_VERSION
 
 (cd "$DIR" \
-  && sed -ie "s/\"version\": \".*\"/\"version\": \"$PATCH_VERSION\"/" package.json
+  && sed -ie "s/\"version\": \".*\"/\"version\": \"$PATCH_VERSION\"/" package.json \
   && git add package.json \
   && git commit -m "v$PATCH_VERSION" \
   && git tag "v$PATCH_VERSION" \
