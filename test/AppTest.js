@@ -7,7 +7,7 @@ const $ = require('jquery')
 describe('App', function() {
   beforeEach(function() {
     this.stateAjaxArgs = {
-      'url': 'https://example.org/api/v1/store/state',
+      'url': 'https://origin.org/api/v1/store/state',
       'dataType': 'json',
       'headers': {
         'Authorization': 'Basic YXNkZjp4LWF1dGgtdG9rZW4=',
@@ -33,6 +33,7 @@ describe('App', function() {
 
     this.options = {
       server: 'https://example.org',
+      origin: 'https://origin.org',
       documentSetId: '1',
       apiToken: 'asdf',
     }

@@ -2,10 +2,8 @@
 
 const browserify = require('browserify')
 const buffer = require('vinyl-buffer')
-const express = require('express')
 const gulp = require('gulp')
 const jade = require('gulp-jade')
-const morgan = require('morgan')
 const less = require('gulp-less')
 const source = require('vinyl-source-stream')
 const sourcemaps = require('gulp-sourcemaps')
@@ -60,7 +58,9 @@ gulp.task('less', function() {
 
 gulp.task('dev', ['browserify-dev', 'jade', 'less'], function() {
   gulp.watch('./less/**/*.less', ['less'])
-  return gulp.watch('./jade/**/*.jade', ['jade'])
+  gulp.watch('./jade/**/*.jade', ['jade'])
+  require('./server')
+  process.on('SIGINT', () => process.exit(0))
 })
 
 gulp.task('dist', ['browserify', 'jade', 'less'])

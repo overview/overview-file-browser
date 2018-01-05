@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+DIR="$(dirname "$0")"
+
+echo "Opening http://localhost:3334 and running gulp..."
+
+EXTRA_DOCKER_RUN_ARGS="" \
+exec "$DIR"/in-docker npm "$@"

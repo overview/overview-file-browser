@@ -60,7 +60,7 @@ function folderListTemplate(args) {
 function App(options) {
   var _this = this
 
-  var neededKeys = [ 'server', 'documentSetId', 'apiToken' ]
+  var neededKeys = [ 'server', 'origin', 'documentSetId', 'apiToken' ]
   
   neededKeys.forEach(function(prop) {
     if (!options[prop]) {
@@ -80,16 +80,18 @@ App.prototype.attach = function(el) {
   this.el.textContent = 'Loading…'
   this.$el = $(el)
 
+  var cachedStatePromise = Promise.resolve($.ajax({
+    url: this.origin + '/api/v1/store/state',
+    dataType: 'json',
+    headers: {
+      Authorization: 'Basic ' + new Buffer(this.apiToken + ':x-auth-token').toString('base64'),
+    }
+  }))
+
   // Kick off rendering promises, asynchronously
   Promise.all([
     Promise.resolve($.ajax('/folders'+window.location.search)),
-    Promise.resolve($.ajax({
-      url: this.server + '/api/v1/store/state',
-      dataType: 'json',
-      headers: {
-        Authorization: 'Basic ' + new Buffer(this.apiToken + ':x-auth-token').toString('base64'),
-      },
-    }))
+    cachedStatePromise,
   ])
     .then(function(values) {
       var folderData = values[0]
@@ -117,7 +119,7 @@ App.prototype.attach = function(el) {
     })
     .catch(function(e) {
       _this.el.textContent = e.isOverviewError ? e.message : 'Error in plugin code'
-      console.log(e, _this.el, _this.el.textContent)
+      console.warn(e, _this.el, _this.el.textContent)
     })
 
   this.$el.on('click', 'a.folder', function(ev) {
@@ -141,12 +143,12 @@ App.prototype.attach = function(el) {
 
 App.prototype.runSearch = function(path) {
   window.parent.postMessage({
-    call: 'setDocumentListParams',
+    call: 'refineDocumentListParams',
     args: [ {
       q: 'title:"' + path.substr(1).replace('"', '\"') + '"',
       name: 'in ' + path,
     } ],
-  }, '*')
+  }, this.origin)
 }
 
 App.prototype.saveState = function() {
@@ -154,7 +156,7 @@ App.prototype.saveState = function() {
   var expanded = $('div.expanded').get().map(function(el) { return el.getAttribute('data-fullpath') })
 
   $.ajax({
-    url: this.server + '/api/v1/store/state',
+    url: this.origin + '/api/v1/store/state',
     type: 'put',
     contentType: 'application/json',
     headers: {

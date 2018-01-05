@@ -1,6 +1,13 @@
 module.exports = function(config) {
   config.set({
-    browsers: [ 'Electron' ],
+    browsers: [ 'Chromium' ],
+    customLaunchers: {
+      Chromium: {
+        base: 'ChromeHeadless',
+        flags: [ '--no-sandbox' ],
+      }
+    },
+
     frameworks: [ 'browserify', 'mocha' ],
     reporters: [ 'mocha' ],
     verbose: true,

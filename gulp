@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+DIR="$(dirname "$0")"
+
+EXTRA_DOCKER_RUN_ARGS="--publish 127.0.0.1:3334:80 --name overview-file-browser" \
+exec "$DIR"/in-docker gulp "$@"
