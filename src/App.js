@@ -1,7 +1,5 @@
 'use strict'
 
-var $ = require('jquery')
-
 var Escapes = {
   '&': '&amp;',
   '<': '&lt;',
@@ -70,41 +68,49 @@ function App(options) {
   })
 }
 
-App.prototype.$ = function() {
-  return this.$el.find.apply(this, Array.prototype.slice.apply(arguments))
+function loadStateFromOverviewPromise(origin, apiToken) {
+  return fetch(origin + '/api/v1/store/state', {
+    headers: {
+      Authorization: 'Basic ' + window.btoa(apiToken + ':x-auth-token'),
+    },
+  })
+    .then(function(r) { return r.json() })
+}
+
+function loadFoldersFromPluginPromise(server, documentSetId, apiToken) {
+  return fetch(
+    [
+      '/folders',
+      '?apiToken=', encodeURIComponent(apiToken),
+      '&documentSetId=', encodeURIComponent(documentSetId),
+      '&server=', encodeURIComponent(server),
+    ].join('')
+  )
+    .then(function(r) { return r.json() })
+    .then(function(folderData) {
+      if (folderData.errors && folderData.errors[0]) {
+        var err = new Error(folderData.errors[0].title)
+        err.isOverviewError = true
+        throw err
+      } else {
+        return folderData.data
+      }
+    })
 }
 
 App.prototype.attach = function(el) {
   var _this = this
   this.el = el
   this.el.textContent = 'Loading…'
-  this.$el = $(el)
-
-  var cachedStatePromise = Promise.resolve($.ajax({
-    url: this.origin + '/api/v1/store/state',
-    dataType: 'json',
-    headers: {
-      Authorization: 'Basic ' + new Buffer(this.apiToken + ':x-auth-token').toString('base64'),
-    }
-  }))
 
   // Kick off rendering promises, asynchronously
   Promise.all([
-    Promise.resolve($.ajax('/folders'+window.location.search)),
-    cachedStatePromise,
+    loadFoldersFromPluginPromise(this.server, this.documentSetId, this.apiToken),
+    loadStateFromOverviewPromise(this.origin, this.apiToken),
   ])
     .then(function(values) {
-      var folderData = values[0]
+      var folders = values[0]
       var state = values[1]
-      var folders
-
-      if (folderData.errors && folderData.errors[0]) {
-        var err = new Error(folderData.errors[0].title)
-        err.isOverviewError = true
-        throw err
-      } else {
-        folders = folderData.data
-      }
 
       if (state.selected) {
         _this.runSearch(state.selected)
@@ -122,8 +128,15 @@ App.prototype.attach = function(el) {
       console.warn(e, _this.el, _this.el.textContent)
     })
 
-  this.$el.on('click', 'a.folder', function(ev) {
-    var folder = ev.currentTarget
+  this.el.addEventListener('click', function(ev) {
+    // Only catch on click a.folder
+    var a = ev.target
+    while (a && a.tagName !== 'A') {
+      a = a.parentNode
+    }
+    if (!a || !a.classList.contains('folder')) return
+
+    var folder = a
     var container = folder.parentNode
     var path = folder.getAttribute('href').substring(1)
 
@@ -132,7 +145,11 @@ App.prototype.attach = function(el) {
     if (container.classList.contains('selected')) {
       container.classList.toggle('expanded')
     } else {
-      _this.$el.find('.selected').removeClass('selected')
+      // Remove ".selected" from everything
+      Array.prototype.forEach.call(_this.el.querySelectorAll('.selected'), function(el) {
+        el.classList.remove('selected')
+      })
+      // Add ".selected" and ".expanded" to current class
       container.classList.add('selected')
       container.classList.add('expanded')
     }
@@ -152,21 +169,27 @@ App.prototype.runSearch = function(path) {
 }
 
 App.prototype.saveState = function() {
-  var selected = $('div.selected').attr('data-fullpath')
-  var expanded = $('div.expanded').get().map(function(el) { return el.getAttribute('data-fullpath') })
+  var selected = null
+  var selectedNode = this.el.querySelector('div.selected')
+  if (selectedNode) selected = selectedNode.getAttribute('data-fullpath')
 
-  $.ajax({
-    url: this.origin + '/api/v1/store/state',
-    type: 'put',
-    contentType: 'application/json',
+  var expanded = []
+  var expandedNodes = this.el.querySelectorAll('div.expanded')
+  if (expandedNodes) expanded = Array.prototype.map.call(expandedNodes, function(el) {
+    return el.getAttribute('data-fullpath')
+  })
+
+  fetch(this.origin + '/api/v1/store/state', {
+    method: 'PUT',
     headers: {
-      Authorization: 'Basic '+new Buffer(this.apiToken+':x-auth-token').toString('base64'),
+      'Content-Type': 'application/json',
+      Authorization: 'Basic ' + window.btoa(this.apiToken + ':x-auth-token'),
     },
-    data: JSON.stringify({
+    body: JSON.stringify({
       selected: selected,
       expanded: expanded,
     })
-  })
+  }) // and ignore any success or errors
 }
 
 module.exports = App

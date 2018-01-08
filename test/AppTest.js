@@ -1,35 +1,50 @@
 'use strict'
 
+const $ = require('jquery')
 require('./test_helper')
 const App = require('../src/App')
-const $ = require('jquery')
 
 describe('App', function() {
   beforeEach(function() {
-    this.stateAjaxArgs = {
-      'url': 'https://origin.org/api/v1/store/state',
-      'dataType': 'json',
+    this.stateAjaxArgs = [ 'https://origin.org/api/v1/store/state', {
       'headers': {
         'Authorization': 'Basic YXNkZjp4LWF1dGgtdG9rZW4=',
       }
+    } ]
+
+    this.foldersAjaxArgs = [
+      '/folders?apiToken=asdf&documentSetId=1&server=https%3A%2F%2Fexample.org'
+    ]
+
+    // Returns a function that resolves a promise
+    //
+    // Input to the returned function: successful JSON
+    // Output: a Fetch API Response object
+    function respondToFetch(resolve) {
+      return function(jsonResponse) {
+        var blob = new Blob([ JSON.stringify(jsonResponse) ])
+        var init = { status: 200, statusText: 'OK' }
+        var response = new Response(blob, init)
+        resolve(response)
+      }
     }
 
-    this.foldersAjaxArgs = '/folders' + window.location.search
-
     this.sandbox = sinon.sandbox.create()
-    const ajaxStub = this.sandbox.stub($, 'ajax')
-    ajaxStub.withArgs(this.stateAjaxArgs).returns(
-      new Promise((resolve, reject) => {
-        this.resolveState = resolve
-        this.rejectState = reject
-      })
-    )
-    ajaxStub.withArgs(this.foldersAjaxArgs).returns(
-      new Promise((resolve, reject) => {
-        this.resolveFolders = resolve
-        this.rejectFolders = reject
-      })
-    )
+    this.sandbox.stub(window, 'fetch').callsFake((...args) => {
+      if (args[0] === this.stateAjaxArgs[0]) {
+        return new Promise((resolve, reject) => {
+          this.resolveState = respondToFetch(resolve)
+          this.rejectState = reject
+        })
+      }
+      if (args[0] === this.foldersAjaxArgs[0]) {
+        return new Promise((resolve, reject) => {
+          this.resolveFolders = respondToFetch(resolve)
+          this.rejectFolders = reject
+        })
+      }
+      console.warn('Unhandled args', ...args)
+    })
 
     this.options = {
       server: 'https://example.org',
@@ -55,9 +70,9 @@ describe('App', function() {
     })
 
     it('should make an ajax request for the data', function() {
-      expect($.ajax).to.have.been.calledTwice
-      expect($.ajax).to.have.been.calledWith(this.foldersAjaxArgs)
-      expect($.ajax).to.have.been.calledWith(this.stateAjaxArgs)
+      expect(window.fetch).to.have.been.calledTwice
+      expect(window.fetch).to.have.been.calledWith(...this.foldersAjaxArgs)
+      expect(window.fetch).to.have.been.calledWith(...this.stateAjaxArgs)
     })
 
     it('should show error on error', function(done) {
@@ -88,7 +103,7 @@ describe('App', function() {
       setTimeout(() => { // slower than process.nextTick()
         expect(this.$el.find('ul > li > div > a.folder').text()).to.eq('rootchild1subchild1child2')
         done()
-      }, 0)
+      }, 10) // make sure the wait() and accompanying Promises finish
     })
   })
 })
