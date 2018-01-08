@@ -45,6 +45,7 @@ Capybara.default_max_wait_time = 0 # VERY IMPORTANT: default must be 0. Be expli
 # Include all helpers, unordered.
 Dir.glob('/app/helpers/**/*.rb')
   .map { |e| e.sub(/\.rb$/, '') }
+  .each { |e| puts e }
   .each { |e| require(e) }
 
 class OverviewIntegrationSpec < Minitest::Test

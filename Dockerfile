@@ -18,14 +18,16 @@ RUN apk --update --no-cache add chromium nodejs-npm
 COPY package.json package-lock.json /app/
 RUN npm install
 
-# We read files from here:
-VOLUME /app/jade
-VOLUME /app/src
-VOLUME /app/test
-VOLUME /app/less
-VOLUME /app/gulpfile.js
-VOLUME /app/server.js
-VOLUME /app/karma.conf.js
+## We read files from here:
+# (these are commented out because they break Docker Hub's auto-builder. TODO
+# stop auto-building on Docker Hub so we can set target=production)
+#VOLUME /app/jade
+#VOLUME /app/src
+#VOLUME /app/test
+#VOLUME /app/less
+#VOLUME /app/gulpfile.js
+#VOLUME /app/server.js
+#VOLUME /app/karma.conf.js
 
 ENV PATH "/app/node_modules/.bin:/usr/local/bin:/usr/bin:/bin"
 ENV CHROME_BIN "/usr/bin/chromium-browser"
