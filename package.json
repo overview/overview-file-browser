@@ -1,6 +1,6 @@
 {
   "name": "overview-file-browser",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Overview File Browser",
   "scripts": {
     "test": "node_modules/karma/bin/karma start --single-run",
