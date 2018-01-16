@@ -29,7 +29,7 @@ RUN npm install
 #VOLUME /app/server.js
 #VOLUME /app/karma.conf.js
 
-ENV PATH "/app/node_modules/.bin:/usr/local/bin:/usr/bin:/bin"
+ENV PATH "/app/node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/sbin"
 ENV CHROME_BIN "/usr/bin/chromium-browser"
 
 # build: similar to development, but just builds and writes to dist/
