@@ -37,10 +37,11 @@ services:
   integration-test:
     image: overview/overview-integration-tester:${OVERVIEW_INTEGRATION_TESTER_VERSION}
     depends_on: [ 'overview-web', 'overview-file-browser' ]
+    command: 'sh -c "apt-get -y install xvfb && xvfb-run ./all-tests"'
     environment:
       OVERVIEW_URL: "http://overview-web"
       WAIT_FOR_URLS: ${WAIT_FOR_URLS}
-      HEADLESS: 'true'
+      HEADLESS: 'false' # headless breaks folder upload
     volumes:
       - ./files:/app/files
       - ./spec:/app/spec
